@@ -2,8 +2,6 @@ import pyautogui
 import time
 import argparse
 import logging
-
-from datetime import timedelta
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 
@@ -13,8 +11,6 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 CLOSE_NOTIFICATION = (413, 83)
-
-FAILURE_TEST_INTERVAL = timedelta(minutes=5)
 
 
 def goto_class(driver):
@@ -62,6 +58,7 @@ def login(driver, i, usernames):
         input1.send_keys(usernames[i].strip())
         driver.find_element_by_xpath('//*[@type="submit"]').click()
         driver.find_element_by_xpath('//*[@class="box-shrink close-button-container"]').click()
+    driver.find_element_by_xpath('//*[@title="خروجی صدا"]').click()
 
 
 def exit_from_vc(driver):
@@ -101,7 +98,7 @@ def main():
                 try_s(lambda: driver.execute_script(f"window.open('about:blank', 'tab_{i}');"))
             logger.info(f'Open vc for tab {i + 1}')
             try_s(lambda: get_vc(driver, args))
-            logger.info(f'Login as guest for {i+1}')
+            logger.info(f'Login as guest for {i + 1}')
             try_s(lambda: login(driver, i, usernames))
             close_chrome_notification()
 
