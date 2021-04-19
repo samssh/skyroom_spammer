@@ -77,35 +77,36 @@ def main():
     f = open(args.username, 'r', encoding="utf-8")
     usernames = f.readlines()
     n = len(usernames)
-    if args.url != '':
-        chrome_options = Options()
-        chrome_options.add_argument("--incognito")
-        logger.info('Opening google chrome')
-        driver = None
-        for retry_number in range(10):
-            try:
-                if driver:
-                    logger.info('Driver is not none, close it.')
-                    driver.close()
-                driver = webdriver.Chrome(options=chrome_options)
-                driver.implicitly_wait(10)
-                driver.maximize_window()
-                break
-            except Exception as e:
-                logger.exception(e)
-        for i in range(n):
-            if i != 0:
-                try_s(lambda: driver.execute_script(f"window.open('about:blank', 'tab_{i}');"))
-            logger.info(f'Open vc for tab {i + 1}')
-            try_s(lambda: get_vc(driver, args))
-            logger.info(f'Login as guest for {i + 1}')
-            try_s(lambda: login(driver, i, usernames))
-            close_chrome_notification()
+    if args.url == '':
+        return
+    chrome_options = Options()
+    chrome_options.add_argument("--incognito")
+    logger.info('Opening google chrome')
+    driver = None
+    for retry_number in range(10):
+        try:
+            if driver:
+                logger.info('Driver is not none, close it.')
+                driver.close()
+            driver = webdriver.Chrome(options=chrome_options)
+            driver.implicitly_wait(10)
+            driver.maximize_window()
+            break
+        except Exception as e:
+            logger.exception(e)
+    for i in range(n):
+        if i != 0:
+            try_s(lambda: driver.execute_script(f"window.open('about:blank', 'tab_{i}');"))
+        logger.info(f'Open vc for tab {i + 1}')
+        try_s(lambda: get_vc(driver, args))
+        logger.info(f'Login as guest for {i + 1}')
+        try_s(lambda: login(driver, i, usernames))
+        close_chrome_notification()
 
-        time.sleep(60 * args.duration)
-        for i in range(n):
-            logger.info(f"exit tab{i + 1}")
-            try_s(lambda: exit_from_vc(driver))
+    time.sleep(60 * args.duration)
+    for i in range(n):
+        logger.info(f"exit tab{i + 1}")
+        try_s(lambda: exit_from_vc(driver))
 
 
 if __name__ == "__main__":
