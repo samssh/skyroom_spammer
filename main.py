@@ -59,10 +59,18 @@ def login(driver, i, usernames):
         driver.find_element_by_xpath('//*[@type="submit"]').click()
         driver.find_element_by_xpath('//*[@class="box-shrink close-button-container"]').click()
     driver.find_element_by_xpath('//*[@title="خروجی صدا"]').click()
+    text_message = driver.find_element_by_xpath('//*[@placeholder="پیام خود را وارد کنید"]')
+    text_message.click()
+    text_message.send_keys("سلام")
+    text_message.send_keys("\n")
 
 
 def exit_from_vc(driver):
     driver.switch_to.window(driver.window_handles[-1])
+    text_message = driver.find_element_by_xpath('//*[@placeholder="پیام خود را وارد کنید"]')
+    text_message.click()
+    text_message.send_keys("خسته نباشید")
+    text_message.send_keys("\n")
     driver.find_element_by_id("app_menu").click()
     driver.find_element_by_xpath("//*[contains(text(), 'خروج')]").click()
     driver.close()
